@@ -1,20 +1,24 @@
 import allure
 from config import ErrorMessege
+from helpers.create_random_user import create_new_user_and_return_login_password
 
 
 class TestUser:
     @allure.title("Создание нового пользователя")
     @allure.description("Создание пользователя")
-    def test_create_new_user(self, stocks_api, new_user_data):
-        body = new_user_data
+    def test_create_new_user(
+        self, stocks_api):
+        body = create_new_user_and_return_login_password()
         response = stocks_api.create_new_user(json=body)
+        assert response.status_code == 200
         assert response.json()["success"]
         assert "accessToken" in response.json()
         assert "refreshToken" in response.json()
 
     @allure.title("Создание пользователя, который уже зарегистрирован")
-    def test_create_new_same_user(self, stocks_api, new_user_data):
-        body = new_user_data
+    def test_create_new_same_user(
+        self, stocks_api):
+        body = create_new_user_and_return_login_password()
         response_1 = stocks_api.create_new_user(json=body)
         assert response_1.json()["success"]
 
